@@ -21,6 +21,6 @@ def punch(cmd):
 
 if __name__ == '__main__':
     print("start-----")
-    schedule.every().day.at('1:28').do(punch)
+    schedule.every().day.at('1:33').do(punch)
     while True:
         schedule.run_pending()
