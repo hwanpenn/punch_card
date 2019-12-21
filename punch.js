@@ -3,11 +3,11 @@ const schedule = require('node-schedule');
 
 const  scheduleCronstyle = ()=>{
     //每天早上8点半
-    schedule.scheduleJob('30 40 0 * * *',()=>{
+    schedule.scheduleJob('30 45 0 * * *',()=>{
         punch()
     }); 
     //每天晚上6点半
-    schedule.scheduleJob('30 50 0 * * *',()=>{
+    schedule.scheduleJob('30 10 1 * * *',()=>{
         punch()
     }); 
 }
