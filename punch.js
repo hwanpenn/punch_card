@@ -3,11 +3,11 @@ const schedule = require('node-schedule');
 
 const  scheduleCronstyle = ()=>{
     //每天早上8点半
-    schedule.scheduleJob('30 10 2 * * *',()=>{
+    schedule.scheduleJob('30 20 2 * * *',()=>{
         punch()
     }); 
     //每天晚上6点半
-    schedule.scheduleJob('30 20 2 * * *',()=>{
+    schedule.scheduleJob('30 30 2 * * *',()=>{
         punch()
     }); 
 }
@@ -20,12 +20,11 @@ scheduleCronstyle();
 // process.exec("adb shell input keyevent 3");
 
 function exec(shell, time = 0) {
-  const cmd = process.exec(shell, function(error, stdout, stderr) {
+  setTimeout(process.exec(shell, function(error, stdout, stderr) {
     console.log("exec error: " + error);
     console.log("exec stdout: " + stdout);
     console.log("exec stderr: " + stderr);
-  });
-  setTimeout(cmd, time);
+  }), time);
 }
 function punch() {
   //解锁
