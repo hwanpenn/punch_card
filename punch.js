@@ -52,6 +52,11 @@ function start() {
   const time = Math.floor(Math.random()*10)*3*1000*60
   setTimeout(un_lock(),time)
 }
+function test() {
+  const time = 1000*60
+  console.log("一分钟后开始测试");
+  setTimeout(un_lock(),time)
+}
 
 const scheduleTime = ()=>{
     const rule = new schedule.RecurrenceRule()
@@ -64,3 +69,4 @@ const scheduleTime = ()=>{
     });
 }
 scheduleTime();
+test()
