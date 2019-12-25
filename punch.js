@@ -1,53 +1,66 @@
 const process = require("child_process");
-const schedule = require('node-schedule');
+const schedule = require("node-schedule");
 
-const  scheduleCronstyle = ()=>{
-    //每天早上8点半
-    schedule.scheduleJob('30 20 2 * * *',()=>{
-        punch()
-    }); 
-    //每天晚上6点半
-    schedule.scheduleJob('30 30 2 * * *',()=>{
-        punch()
-    }); 
+function exec(shell) {
+  process.exec(shell, function(error, stdout, stderr) {
+    if (error !== null) {
+      console.log("exec error: " + error);
+    }
+  });
 }
-
-scheduleCronstyle();
-
-// 模拟Power键
-// process.exec("adb shell input keyevent 26");
-// 模拟Home键
-// process.exec("adb shell input keyevent 3");
-
-function exec(shell, time = 0) {
-  setTimeout(process.exec(shell, function(error, stdout, stderr) {
-    console.log("exec error: " + error);
-    console.log("exec stdout: " + stdout);
-    console.log("exec stderr: " + stderr);
-  }), time);
-}
-function punch() {
-  //解锁
+function lock() {
+  console.log("lock");
   exec(`adb shell input keyevent 26`);
-  //解锁后 等2000毫秒 打开钉钉
-  exec(`adb shell input tap 400 600`, 2000);
-  //打开钉钉后 等10000毫秒 点输入密码
-  exec(`adb shell input tap 175 576`, 10000);
-  //2000毫秒后输入密码
-  exec(`adb shell input text "dingding5277"`, 2000);
-  //2000毫秒后点登录
-  exec(`adb shell input tap 352 694`, 2000);
-  //回首页
-  exec(`adb shell input tap 400 600`, 60000);
-  //锁屏
-  exec(`adb shell input keyevent 26`, 2000);
+}
+function back_home() {
+  console.log("back_home");
+  exec(`adb shell input keyevent 3`);
+  setTimeout(lock, 1000);
+}
+function click() {
+  console.log("click");
+  exec(`adb shell input tap 352 694`);
+  setTimeout(back_home, 60000);
+}
+function login() {
+  console.log("login");
+  exec(`adb shell input text "dingding5277"`);
+  setTimeout(click, 1000);
+}
+function input() {
+  console.log("input");
+  exec(`adb shell input tap 175 576`);
+  setTimeout(login, 1000);
+}
+function go_home() {
+  console.log("go_home");
+  exec(`adb shell input tap 122 136`);
+  setTimeout(input, 20000);
+}
+function un_lock() {
+  process.exec(`adb shell dumpsys power`, function(error, stdout, stderr) {
+    if (JSON.stringify(stdout).indexOf("state=OFF") > 0) {
+      console.log("锁屏状态,解锁");
+      exec(`adb shell input keyevent 26`);
+      setTimeout(go_home, 1000);
+    } else {
+      console.log("点亮状态");
+    }
+  });
+}
+function start() {
+  const time = Math.floor(Math.random()*10)*3*1000*60
+  setTimeout(un_lock(),time)
 }
 
-// //点钉钉后 等20000毫秒 点工作
-// exec(`adb shell input tap 353 1233`, 20000);
-// //上滑100
-// exec(`adb shell input swipe 353 1092 353 992`, 20000);
-// //上滑后 等2000毫秒 点打卡
-// exec(`adb shell input tap 603 1129`, 2000);
-// //点打卡后 等20000毫秒 开始打卡
-// exec(`adb shell input tap 603 1129`, 2000);
+const scheduleTime = ()=>{
+    const rule = new schedule.RecurrenceRule()
+    rule.dayOfWeek = [1,2,3,4,5]
+    rule.hour = [8,18]
+    rule.minute = 30
+    console.log("start punch , wait ...");
+    schedule.scheduleJob(rule,()=>{
+      start()
+    });
+}
+scheduleTime();
